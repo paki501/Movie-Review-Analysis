@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Review Sentiment Analysis</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        textarea {
+            width: 60%;
+            height: 100px;
+            padding: 10px;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Movie Review Sentiment Analysis</h1>
+    <textarea id="reviewText" placeholder="Enter your movie review here..."></textarea><br>
+    <button onclick="analyzeSentiment()">Analyze Sentiment</button>
+    <p id="result"></p>
+
+    <script>
+        async function analyzeSentiment() {
+            const review = document.getElementById("reviewText").value;
+            const resultText = document.getElementById("result");
+
+            if (review.trim() === "") {
+                resultText.innerHTML = "⚠️ Please enter a review.";
+                return;
+            }
+
+            resultText.innerHTML = "🔄 Analyzing...";
+
+            const response = await fetch("http://127.0.0.1:8000/predict", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ text: review })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                resultText.innerHTML = `🎬 Sentiment: <strong>${data.sentiment}</strong>`;
+            } else {
+                resultText.innerHTML = "❌ Error analyzing review.";
+            }
+        }
+    </script>
+
+</body>
+</html>
